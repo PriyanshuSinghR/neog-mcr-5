@@ -1,10 +1,13 @@
 import { Icon } from '@iconify/react';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RecipeContext } from '../context/RecipeContext';
+import { EditRecipe } from './EditRecipe';
+import { Popup } from './Popup';
 
 export const RecipeCard = ({ recipe }) => {
   const { state, dispatch } = useContext(RecipeContext);
+  const [recipeEdit, setRecipeEdit] = useState(false);
   const handleDelete = () =>
     dispatch({
       type: 'UPDATE_RECIPE',
@@ -63,15 +66,33 @@ export const RecipeCard = ({ recipe }) => {
           color="black"
           width="30"
           height="30"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setRecipeEdit(true)}
         />
         <Icon
           icon="material-symbols:delete-outline"
           color="black"
           width="30"
           height="30"
+          style={{ cursor: 'pointer' }}
           onClick={handleDelete}
         />
       </div>
+      {recipeEdit && (
+        <div>
+          <Popup
+            content={
+              <div>
+                <EditRecipe
+                  recipe={recipe}
+                  editClose={() => setRecipeEdit(false)}
+                />
+              </div>
+            }
+            handleClose={() => setRecipeEdit(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

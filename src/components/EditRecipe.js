@@ -1,21 +1,14 @@
-import { Icon } from '@iconify/react';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-
+import React, { useContext, useRef, useState } from 'react';
 import { RecipeContext } from '../context/RecipeContext';
+import { Icon } from '@iconify/react';
 
-export const NewRecipe = ({ handleToggle }) => {
+export const EditRecipe = ({ recipe, editClose }) => {
   const { state, dispatch } = useContext(RecipeContext);
-  const [upload, setUpload] = useState({
-    name: '',
-    image: '',
-    instructions: '',
-    cuisine: '',
-    ingredients: '',
-  });
+  const [upload, setUpload] = useState(recipe);
 
   const hiddenFileInput = useRef(null);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     hiddenFileInput.current.click();
   };
   const handleChange = (event) => {
@@ -29,11 +22,12 @@ export const NewRecipe = ({ handleToggle }) => {
   const postData = () => {
     dispatch({
       type: 'UPDATE_RECIPE',
-      payload: [...state.allRecipes, upload],
+      payload: state.allRecipes.map((r) =>
+        r.name === recipe.name ? upload : r,
+      ),
     });
-    handleToggle();
+    editClose();
   };
-
   return (
     <div
       style={{
@@ -46,7 +40,7 @@ export const NewRecipe = ({ handleToggle }) => {
     >
       <input
         placeholder="Name"
-        value={upload.name}
+        value={upload?.name}
         onChange={(event) =>
           setUpload({
             ...upload,
@@ -71,7 +65,7 @@ export const NewRecipe = ({ handleToggle }) => {
       />
       <input
         placeholder="Cuisine"
-        value={upload.cuisine}
+        value={upload?.cuisine}
         onChange={(event) =>
           setUpload({
             ...upload,
@@ -96,7 +90,7 @@ export const NewRecipe = ({ handleToggle }) => {
       />
       <input
         placeholder="Ingredients"
-        value={upload.ingredients}
+        value={upload?.ingredients}
         onChange={(event) =>
           setUpload({
             ...upload,
@@ -121,7 +115,7 @@ export const NewRecipe = ({ handleToggle }) => {
       />
       <textarea
         placeholder="Instructions"
-        value={upload.instructions}
+        value={upload?.instructions}
         onChange={(event) =>
           setUpload({
             ...upload,
@@ -226,7 +220,7 @@ export const NewRecipe = ({ handleToggle }) => {
           className="button-shadow"
           onClick={postData}
         >
-          Add
+          Edit
         </button>
       </div>
     </div>
